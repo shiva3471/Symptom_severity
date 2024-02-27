@@ -8,18 +8,35 @@ export const Interface =(props) => {
     const [Symptom3, setSymptom3] = useState('');
     const [Symptom4, setSymptom4] = useState('');
 
-   const handleSubmit =async (e) => {
-        e.preventDefault();
-        const a=Symptom.get(Symptom1);
-        const b=Symptom.get(Symptom2);
-        const c=Symptom.get(Symptom3);
-        const d=Symptom.get(Symptom4);
-        console.log(a);
-        console.log(b);
-        console.log(c);
-        console.log(d);
-        alert("submitted successfully");
+   
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    const a=Symptom.get(Symptom1);
+    const b=Symptom.get(Symptom2);
+    const c=Symptom.get(Symptom3);
+    const d=Symptom.get(Symptom4);
+    // Send the selected symptoms to the backend
+    const response = await fetch('http://localhost:8000/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            s1: Symptom1,
+            s2: Symptom2,
+            s3: Symptom3,
+            s4: Symptom4
+        })
+    });
+
+    // Parse the response
+    const data = await response.json();
+
+    // Handle the prediction result
+    console.log(data.prediction);
+    alert("submitted successfully");
     }
+
 
 
 return (
@@ -724,6 +741,12 @@ return (
           </div>
         </form>
         </div>
+        {prediction !== null && (
+                <div className="predictionContainer">
+                    <h2>Prediction:</h2>
+                    <p>{prediction}</p>
+                </div>
+            )}
     </div>
   );
 }
